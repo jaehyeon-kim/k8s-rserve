@@ -13,6 +13,7 @@ uvicorn = "*"
 pydantic = "*"
 python-jose = "*"
 python-multipart = "*"
+httpx = "*"
 
 [requires]
 python_version = "3.7"
