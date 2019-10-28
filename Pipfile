@@ -6,16 +6,13 @@ verify_ssl = true
 [dev-packages]
 black = "*"
 pylint = "*"
-#pytest = "*"
-#pytest-dependency = "*"
-ipdb = "*"
 
 [packages]
-flask = "*"
-flask-cors = "*"
-flask-restplus = "*"
-python-jose-cryptodome = "*"
-requests = "*"
+fastapi = "*"
+uvicorn = "*"
+pydantic = "*"
+python-jose = "*"
+python-multipart = "*"
 
 [requires]
 python_version = "3.7"
