@@ -21,4 +21,5 @@ WORKDIR /home/rserve
 ## copy source
 COPY . /home/rserve/
 
-ENTRYPOINT ["/usr/local/bin/R", "CMD", "Rserve", "--slave", "--RS-conf", "/home/rserve/rserve.conf", "--RS-source", "/home/rserve/rserve-src.R"]
+ENTRYPOINT ["/usr/local/bin/R", "CMD", "Rserve"]
+CMD ["--slave", "--RS-conf", "/home/rserve/rserve.conf", "--RS-source", "/home/rserve/rserve-src.R"]
