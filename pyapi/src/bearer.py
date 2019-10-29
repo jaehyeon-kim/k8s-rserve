@@ -35,8 +35,6 @@ class JWTBearer(HTTPBearer):
         try:
             token = credentials.credentials
             auth_info = JWTAuthorizationInfo(jwt_token=token, claims=decode_token(token))
-            request.scope["username"] = auth_info.claims["sub"]
-            print(request.scope["username"])
         except JWTError:
             raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Invalid Token")
 

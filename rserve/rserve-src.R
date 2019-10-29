@@ -55,8 +55,9 @@ process_request <- function(url, query, body, headers) {
     }
     
     ## check if all defined arguments are supplied
+    params = jsonlite::fromJSON(unlist(request$pars))
     defined_args <- formalArgs(matched_fun)[formalArgs(matched_fun) != '...']
-    args_exist <- defined_args %in% names(request$pars)
+    args_exist <- defined_args %in% names(params)
     if (!all(args_exist)) {
         missing_args <- defined_args[!args_exist]
         payload <- list(message = paste('Missing parameter -', 
@@ -66,13 +67,11 @@ process_request <- function(url, query, body, headers) {
     
     if (is.null(payload)) {
         payload <- tryCatch({
-            do.call(matched_fun, request$pars)
+            do.call(matched_fun, params)
         }, error = function(err) {
+            print(err)
             list(message = 'Internal Server Error')
         })
-        
-        if ('message' %in% names(payload))
-            status_code <- 500
     }
 
     if (grepl('application/json', content_type)) 

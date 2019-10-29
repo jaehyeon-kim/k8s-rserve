@@ -1,5 +1,7 @@
 import os
 
+os.environ["RSERVE_HOST"] = "localhost"
+os.environ["RSERVE_PORT"] = "8000"
 os.environ["JWT_SECRET"] = "chickenAndSons"
 
 import time
@@ -25,20 +27,31 @@ async def get_token(username: str):
     return encode_token(username)
 
 
-class TestResp(BaseModel):
-    value: int = Schema(..., ge=0, description="value")
+class ReqModel(BaseModel):
+    n: float
+    wait: float = None
+
+
+class RespModel(BaseModel):
+    n: float
+    wait: float
+    hostname: str
 
 
 @app.post(
     "/rserve/test",
     summary="test function",
-    response_model=TestResp,
+    response_model=RespModel,
     tags=["rserve"],
     dependencies=[Depends(auth)],
 )
-async def function_test(*, value: int = Body(..., ge=0, embed=True)):
+async def function_test(*, req: ReqModel):
     """
     Make POST request to `test` function to Rserve
-    - **value** - value to be requested (and returned)
+    - **n** - value to be requested
+    - **wait** - time to be delayed
     """
-    return {"value": value}
+    url = "http://{0}:{1}/{2}".format(os.environ["RSERVE_HOST"], os.environ["RSERVE_PORT"], "test")
+    async with httpx.AsyncClient() as client:
+        r = await client.post(url, json=req.json())
+        return r.json()
