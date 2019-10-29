@@ -1,9 +1,4 @@
 import os
-
-os.environ["RSERVE_HOST"] = "localhost"
-os.environ["RSERVE_PORT"] = "8000"
-os.environ["JWT_SECRET"] = "chickenAndSons"
-
 import time
 import httpx
 from fastapi import Depends, FastAPI, Header, HTTPException, Body
@@ -13,7 +8,7 @@ from starlette.requests import Request
 from .src.bearer import JWTBearer
 from .src.bearer import encode_token
 
-app = FastAPI(title="Rserve demo", version="0.0.1")
+app = FastAPI(title="Rserve sidecar demo", version="0.0.1")
 
 auth = JWTBearer()
 
