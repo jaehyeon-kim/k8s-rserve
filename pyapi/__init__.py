@@ -23,7 +23,7 @@ async def get_token(username: str):
 
 
 class ReqModel(BaseModel):
-    n: float
+    n: float = Schema(..., gt=0, le=1)
     wait: float = None
 
 
@@ -44,7 +44,7 @@ async def function_test(*, req: ReqModel):
     """
     Make POST request to `test` function to Rserve
     - **n** - value to be requested
-    - **wait** - time to be delayed
+    - **wait** - time to be delayed, greater than 1 and less than or equal to 1
     """
     url = "http://{0}:{1}/{2}".format(os.environ["RSERVE_HOST"], os.environ["RSERVE_PORT"], "test")
     async with httpx.AsyncClient() as client:
