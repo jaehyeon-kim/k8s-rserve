@@ -1,0 +1,38 @@
+version: "3.7"
+services:
+  rserve:
+    image: kapps/sidecar:rserve
+    container_name: rserve
+    expose:
+      - "8000"
+    entrypoint:
+      - /usr/local/bin/R
+      - CMD
+      - Rserve
+    command: [
+      "--slave", 
+      "--RS-conf", 
+      "/home/rserve/rserve.conf", 
+      "--RS-source", 
+      "/home/rserve/rserve-src.R"
+    ]
+  pyapi:
+    image: kapps/sidecar:pyapi
+    container_name: pyapi
+    expose:
+      - "9000"
+    ports:
+      - "9000:9000"
+    environment:
+      RSERVE_HOST: rserve
+      RSERVE_PORT: "8000"
+      JWT_SECRET: chickenAndSons
+    entrypoint:
+      - uvicorn
+      - api:app
+    command: [
+      "--host", 
+      "0.0.0.0", 
+      "--port", 
+      "9000"
+    ]
