@@ -11,12 +11,12 @@ from starlette.status import HTTP_403_FORBIDDEN, HTTP_401_UNAUTHORIZED
 
 def encode_token(username: str):
     claims = {"sub": username, "debug": True}
-    token = jwt.encode(claims, os.environ["JWT_SECRET"], algorithm="HS256")
+    token = jwt.encode(claims, os.getenv("JWT_SECRET", "chickenAndSons"), algorithm="HS256")
     return {"token": token}
 
 
 def decode_token(token: str):
-    claims = jwt.decode(token, os.environ["JWT_SECRET"], algorithms=["HS256"])
+    claims = jwt.decode(token, os.getenv("JWT_SECRET", "chickenAndSons"), algorithms=["HS256"])
     return claims
 
 

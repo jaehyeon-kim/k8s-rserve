@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rserve-sidecar-service
+spec:
+  selector:
+    app: rserve-sidecar
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9000
+      nodePort: 30000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rserve-sidecar-deployment
+  labels:
+    app: rserve
+spec:
+  selector:
+    matchLabels:
+      app: rserve-sidecar
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: rserve-sidecar
+    spec:
+      containers:
+        - name: rserve
+          image: kapps/sidecar:rserve
+          ports:
+            - containerPort: 8000
+        - name: pyapi
+          image: kapps/sidecar:pyapi
+          env:
+            - name: RSERVE_HOST
+              value: localhost
+            - name: RSERVE_PORT
+              value: "8000"
+            - name: JWT_SECRET
+              value: chickenAndSons
+          ports:
+            - containerPort: 9000

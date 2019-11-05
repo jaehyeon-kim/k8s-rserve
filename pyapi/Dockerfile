@@ -13,4 +13,5 @@ WORKDIR /home/pyapi
 ## copy source
 COPY . /home/pyapi/api
 
-ENTRYPOINT ["uvicorn", "api:app", "--host", "0.0.0.0"]
+ENTRYPOINT ["uvicorn", "api:app"]
+CMD ["--host", "0.0.0.0", "--port", "9000"]

@@ -100,3 +100,5 @@ parse_headers <- function(headers) {
 
 ## Rserve requires .http.request function for handling HTTP request
 .http.request <- process_request
+
+print("API ready to serve requests...")

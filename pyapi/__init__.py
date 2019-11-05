@@ -1,9 +1,4 @@
 import os
-
-os.environ["RSERVE_HOST"] = "localhost"
-os.environ["RSERVE_PORT"] = "8000"
-os.environ["JWT_SECRET"] = "chickenAndSons"
-
 import time
 import httpx
 from fastapi import Depends, FastAPI, Header, HTTPException, Body
@@ -13,7 +8,7 @@ from starlette.requests import Request
 from .src.bearer import JWTBearer
 from .src.bearer import encode_token
 
-app = FastAPI(title="Rserve demo", version="0.0.1")
+app = FastAPI(title="Rserve sidecar demo", version="0.0.1")
 
 auth = JWTBearer()
 
@@ -29,7 +24,7 @@ async def get_token(username: str):
 
 class ReqModel(BaseModel):
     n: float
-    wait: float = None
+    wait: float = Schema(None, gt=0, le=1)
 
 
 class RespModel(BaseModel):
@@ -49,9 +44,10 @@ async def function_test(*, req: ReqModel):
     """
     Make POST request to `test` function to Rserve
     - **n** - value to be requested
-    - **wait** - time to be delayed
+    - **wait** - time to be delayed, greater than 1 and less than or equal to 1
     """
-    url = "http://{0}:{1}/{2}".format(os.environ["RSERVE_HOST"], os.environ["RSERVE_PORT"], "test")
+    host = os.getenv("RSERVE_HOST", "localhost")
+    port = os.getenv("RSERVE_PORT", "8000")
     async with httpx.AsyncClient() as client:
-        r = await client.post(url, json=req.json())
+        r = await client.post("http://{0}:{1}/{2}".format(host, port, "test"), json=req.json())
         return r.json()
